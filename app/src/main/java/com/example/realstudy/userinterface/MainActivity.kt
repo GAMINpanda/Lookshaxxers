@@ -1,5 +1,11 @@
 package com.example.realstudy.userinterface
 
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -7,22 +13,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Typography
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.example.realstudy.ui.theme.RealStudyTheme
-import com.example.realstudy.userinterface.MainViewModel
 
 class MainActivity : ComponentActivity() {
     private lateinit var viewModel: MainViewModel
@@ -34,29 +32,37 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             RealStudyTheme {
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    HomePageScreen(viewModel)
+                val navController = rememberNavController()
+
+                NavHost(navController = navController, startDestination = "home") {
+                    composable("home") {
+                        HomePageScreen(navController, viewModel)
+                    }
+                    composable("studySession") {
+                        StudySessionScreen()
+                    }
                 }
             }
         }
     }
 }
 
+
+
 @Composable
-fun HomePageScreen(viewModel: MainViewModel) {
+fun HomePageScreen(navController: NavHostController, viewModel: MainViewModel) {
     val userName by viewModel.userName.observeAsState("John Doe")
 
     HomePage(
         userName = userName,
-//        startStudySession = {
-//            // Handle starting the study session here
-//            // You can navigate to another screen or perform other actions
-//        }
+        startStudySession = {
+            navController.navigate("studySession")
+        }
     )
 }
 
 @Composable
-fun HomePage(userName: String) {
+fun HomePage(userName: String, startStudySession: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -82,14 +88,14 @@ fun HomePage(userName: String) {
         )
 
         // Study session button
-//        Button(
-//            onClick = { startStudySession() },
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(60.dp)
-//        ) {
-//            Text(text = "Start Study Session")
-//        }
+        Button(
+            onClick = { startStudySession() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+        ) {
+            Text(text = "Start Study Session")
+        }
 
         // Other UI components as needed
     }
