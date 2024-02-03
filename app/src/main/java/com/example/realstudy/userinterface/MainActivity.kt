@@ -81,7 +81,7 @@ fun HomePage(userName: String, startStudySession: () -> Unit) {
             Icon(Icons.Default.Settings, contentDescription = null)
         }
 
-        // Greeting message
+        // Title
         Text(
             text = "StudyReal",
             style = MaterialTheme.typography.titleLarge,
