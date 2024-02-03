@@ -70,4 +70,6 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
     implementation("androidx.navigation:navigation-compose:2.7.6")
 
+    implementation("com.google.firebase:firebase-database-ktx:20.3.0")
+    implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
 }
