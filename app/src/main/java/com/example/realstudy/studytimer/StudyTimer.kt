@@ -23,12 +23,11 @@ class StudyTimer(studyTime: Int, breakTime: Int){
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun bTime(): Pair<LocalTime,LocalTime>{
+    fun bTime(){
         startTime = LocalTime.now()
         while(bCounter >= 0){
             bCounter -= 1
             Thread.sleep(1000)
         }
-        return Pair(startTime,LocalTime.now())
     }
 }
