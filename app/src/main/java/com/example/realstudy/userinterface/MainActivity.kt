@@ -86,7 +86,16 @@ fun HomePage(userName: String, startStudySession: () -> Unit) {
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(bottom = 16.dp)
         )
+        // Other UI components as needed
+    }
 
+    // Box to overlay the button at the bottom
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = Alignment.BottomCenter
+    ) {
         // Study session button
         Button(
             onClick = { startStudySession() },
@@ -96,7 +105,5 @@ fun HomePage(userName: String, startStudySession: () -> Unit) {
         ) {
             Text(text = "Start Study Session")
         }
-
-        // Other UI components as needed
     }
 }
