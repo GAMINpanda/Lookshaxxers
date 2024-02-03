@@ -3,18 +3,32 @@ package com.example.realstudy.studytimer
 import android.os.Build
 import androidx.annotation.RequiresApi
 import java.time.LocalTime
-class StudyTimer(time: Int){
-    var counter = time
+
+class StudyTimer(studyTime: Int, breakTime: Int){
+    var sCounter = studyTime * 60
+    var bCounter = breakTime * 60
     @RequiresApi(Build.VERSION_CODES.O)
-    val startTime = LocalTime.now()
+    var startTime = LocalTime.now()
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun time(): Pair<LocalTime,LocalTime>{
-        while (counter >= 0){
-            counter -= 1
-            Thread.sleep(60000)
+    fun sTime(): Pair<LocalTime,LocalTime>{
+        startTime = LocalTime.now()
+        //Disable apps function
+        while (sCounter >= 0){
+            sCounter -= 1
+            Thread.sleep(1000)
         }
+        //Enable apps
+        return Pair(startTime,LocalTime.now())
+    }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun bTime(): Pair<LocalTime,LocalTime>{
+        startTime = LocalTime.now()
+        while(bCounter >= 0){
+            bCounter -= 1
+            Thread.sleep(1000)
+        }
         return Pair(startTime,LocalTime.now())
     }
 }
