@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "462808709636",
+    "project_id": "studyreal-98599",
+    "storage_bucket": "studyreal-98599.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:462808709636:android:4971cc711c633e51fcd351",
+        "android_client_info": {
+          "package_name": "com.example.realstudy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmMusV76tWei_YLwiQ96oYr9xL3bIDpj0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
