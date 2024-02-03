@@ -5,17 +5,16 @@ class User(val userID: String) {
         TODO()
     }
 
-    // Main UI
-    fun displayFeed() {
-        TODO() // Get friend stuff, display methods
-    }
-
     // Firebase
     fun addToFeed() {
         TODO()
     }
 
     fun addToStorage() {
+        TODO()
+    }
+
+    fun getFeedForFriend() {
         TODO()
     }
 
