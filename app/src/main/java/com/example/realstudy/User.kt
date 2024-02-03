@@ -1,6 +1,11 @@
 package com.example.realstudy
 
-class User(val userID: String) {
+import com.google.firebase.database.DatabaseReference
+
+class User(
+    val userID: String,
+    val database: DatabaseReference
+) {
     init {
         TODO()
     }

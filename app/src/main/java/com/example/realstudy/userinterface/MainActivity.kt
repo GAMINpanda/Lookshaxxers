@@ -11,15 +11,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
+import com.example.realstudy.R
 import com.example.realstudy.ui.theme.RealStudyTheme
 
 class MainActivity : ComponentActivity() {
@@ -76,13 +77,13 @@ fun HomePage(userName: String, startStudySession: () -> Unit) {
                 .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Icon(Icons.Default.Menu, contentDescription = null)
-            Icon(Icons.Default.Star, contentDescription = null)
+            Icon(painter = painterResource(id = R.drawable.baseline_people_24), contentDescription = null)
+            Icon(Icons.Default.Settings, contentDescription = null)
         }
 
-        // Greeting message
+        // Title
         Text(
-            text = "Welcome back, $userName!",
+            text = "StudyReal",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(bottom = 16.dp)
         )
