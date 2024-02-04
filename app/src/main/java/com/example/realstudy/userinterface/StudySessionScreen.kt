@@ -12,7 +12,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -55,14 +54,6 @@ fun StudySessionScreen(user: User, navController: NavController) {
             // Reset variables when the composable is disposed (e.g., when navigating away)
             timerState = TimerState.Stopped
             currentTime = 0
-            startTime = LocalTime.now()
-        }
-    }
-
-    // Use LaunchedEffect to restart the timer when currentTime reaches 0
-    LaunchedEffect(currentTime) {
-        if (currentTime == 0 && timerState != TimerState.Stopped) {
-            timerState = TimerState.Stopped
             startTime = LocalTime.now()
         }
     }
@@ -149,21 +140,21 @@ fun StudySessionScreen(user: User, navController: NavController) {
                         withContext(Dispatchers.Main) {
                             timerState = TimerState.Break
                             startTime = LocalTime.now()
+                            currentTime = 0
 
                             CoroutineScope(Dispatchers.Default).launch {
                                 // Start the timer coroutine for break time
-                                while (currentTime <= (studyTime + breakTimeValue) * 60 && timerState == TimerState.Break) {
+                                while (currentTime < (breakTimeValue) * 60 && timerState == TimerState.Break) {
                                     currentTime = LocalTime.now().toSecondOfDay() - startTime.toSecondOfDay()
                                     delay(1000)
                                 }
 
                                 if (timerState == TimerState.Break) {
-
                                     // Break time completed, update database or perform any other necessary actions
                                     withContext(Dispatchers.Main) {
                                         timerState = TimerState.Stopped
-
                                     }
+                                    currentTime = 0
                                 }
                             }
                         }

@@ -1,5 +1,6 @@
 package com.example.realstudy
 
+import android.se.omapi.Session
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 
@@ -56,7 +57,7 @@ class User(
         TODO()
     }
 
-    private fun getFriends(snapshot: DataSnapshot): List<String> {
+    fun getFriends(snapshot: DataSnapshot): List<String> {
         return snapshot.child("friends").children.map { it.value as String }
     }
 
@@ -75,5 +76,23 @@ class User(
                         .map { img -> img.value as String }
                 )  }
         ) }
+    }
+
+    fun getProfile(snapshot: DataSnapshot): Profile {
+        return Profile(
+            snapshot.child("profile").child("displayName").value as String,
+            snapshot.child("profile").child("profilePicture").value as String
+        )
+    }
+
+    fun getSessions(snapshot: DataSnapshot): MutableList<StudySession> {
+        return snapshot.child("sessions").children
+            .map { c -> StudySession(
+                c.child("startTime").value as String,
+                c.child("endTime").value as String,
+                c.child("duration").value as Int,
+                c.child("images").children
+                    .map { img -> img.value as String }
+            )  }.toMutableList()
     }
 }
