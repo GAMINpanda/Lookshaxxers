@@ -36,6 +36,9 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 
+// UI design
+import androidx.compose.ui.graphics.Color // Colours
+
 val databaseReference =
     FirebaseDatabase.getInstance("https://studyreal-98599-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users/")
 
@@ -171,7 +174,7 @@ fun HomePage(userName: String, startStudySession: () -> Unit) {
 
         // Title
         Text(
-            text = "StudyReal",
+            text = "StudyReal.",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(bottom = 16.dp)
         )
@@ -191,7 +194,8 @@ fun HomePage(userName: String, startStudySession: () -> Unit) {
             onClick = { startStudySession() },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp)
+                .height(60.dp),
+            colors = ButtonDefaults.buttonColors(Color.Black)
         ) {
             Text(text = "Start Study Session")
         }
