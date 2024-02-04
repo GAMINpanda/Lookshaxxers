@@ -1,48 +1,69 @@
 package com.example.realstudy.userinterface
 
-import android.os.Build
-import com.example.realstudy.User
-import com.example.realstudy.Profile
+// For getting/displaying feed
 
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+// UI design
+
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
-import com.example.realstudy.R
-import com.example.realstudy.StudySession
-import com.example.realstudy.ui.theme.RealStudyTheme
-import com.google.firebase.FirebaseApp
-import com.google.firebase.database.FirebaseDatabase
-
-// For getting/displaying feed
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-
-// UI design
-import androidx.compose.ui.graphics.Color  // Colours
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp  // Font-size
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.realstudy.Profile
+import com.example.realstudy.R
+import com.example.realstudy.StudySession
+import com.example.realstudy.User
+import com.example.realstudy.camera.Camera
+import com.example.realstudy.notification.NotificationHandler
+import com.example.realstudy.ui.theme.RealStudyTheme
+import com.google.firebase.FirebaseApp
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+
 
 val databaseReference =
     FirebaseDatabase.getInstance("https://studyreal-98599-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users/")
@@ -73,10 +94,12 @@ val friendUser = User(
 )
 var user = User("1233", mutableListOf("1232"), Profile("John Doe", "https://firebasestorage.googleapis.com/v0/b/studyreal-98599.appspot.com/o/mog.jpg?alt=media&token=f7973466-25c4-4535-86d0-ad982938983e"), mutableListOf())
 
-
-
 class MainActivity : ComponentActivity() {
     private lateinit var viewModel: MainViewModel
+
+    val notificationHandler = NotificationHandler(this)
+
+    val context: Context = this
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -124,6 +147,8 @@ fun addUser(user: User) = database.child(user.userID).setValue(user)
 
 @Composable
 fun HomePageScreen(navController: NavHostController, viewModel: MainViewModel) {
+
+
     fetchData(user)  // Refreshing the user (for any updates while off this page)
 
     HomePage(
@@ -273,7 +298,8 @@ fun FriendBox(
                     start = 12.dp,
                     top = 8.dp,
                     end = 16.dp,
-                    bottom = 12.dp)
+                    bottom = 12.dp
+                )
         ) {
             fun isMe(name: String): String =
                 if (user.profile.displayName == name) {
@@ -305,7 +331,8 @@ fun FriendBox(
                     top = 36.dp,
                     start = 12.dp,
                     end = 12.dp,
-                    bottom = 18.dp)  // Distance between inner box and bottom border
+                    bottom = 18.dp
+                )  // Distance between inner box and bottom border
                 .background(
                     color = Color.White,
                     shape = RoundedCornerShape(12.dp)
