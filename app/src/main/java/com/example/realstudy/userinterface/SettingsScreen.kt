@@ -27,7 +27,7 @@ import androidx.navigation.NavController
 import com.example.realstudy.User
 
 @Composable
-fun SettingsScreen(user: User, navController:NavController) {
+fun SettingsScreen(user: User, navController: NavController) {
 
     val imageUrl = user.profile.profilePicture
 

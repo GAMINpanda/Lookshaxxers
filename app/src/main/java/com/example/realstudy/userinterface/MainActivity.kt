@@ -80,7 +80,7 @@ class MainActivity : ComponentActivity() {
                         HomePageScreen(navController, viewModel)
                     }
                     composable("studySession") {
-                        StudySessionScreen(user)
+                        StudySessionScreen(user, navController)
                     }
                     composable("settings") {
                         SettingsScreen(user, navController)

@@ -8,6 +8,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -24,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.realstudy.R
 import com.example.realstudy.StudySession
 import com.example.realstudy.User
@@ -37,7 +39,7 @@ import java.time.LocalTime
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun StudySessionScreen(user: User) {
+fun StudySessionScreen(user: User, navController: NavController) {
 
     val images = mutableListOf<String>()
 
@@ -75,15 +77,20 @@ fun StudySessionScreen(user: User) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            IconButton(onClick = { navController.popBackStack() }) {
+
+                Icon(Icons.Default.ArrowBack, contentDescription = "Back", modifier= Modifier.padding(bottom = 10.dp))
+            }
             Text(
                 text = "StudyReal.",
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold
                 ),
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(start = 8.dp)
+                    .padding(bottom = 10.dp)
             )
         }
 
