@@ -1,5 +1,6 @@
 package com.example.realstudy.userinterface
 
+import android.os.Build
 import com.example.realstudy.User
 import com.example.realstudy.Profile
 
@@ -12,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -31,6 +33,7 @@ import com.google.firebase.database.FirebaseDatabase
 class MainActivity : ComponentActivity() {
     private lateinit var viewModel: MainViewModel
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -49,7 +52,7 @@ class MainActivity : ComponentActivity() {
                         HomePageScreen(navController, viewModel)
                     }
                     composable("studySession") {
-                        StudySessionScreen()
+                        StudySessionScreen(user)
                     }
                 }
             }
@@ -64,7 +67,7 @@ fun HomePageScreen(navController: NavHostController, viewModel: MainViewModel) {
     val userName by viewModel.userName.observeAsState("John Doe")
 
     HomePage(
-        userName = userName,
+        user = user,
         startStudySession = {
             navController.navigate("studySession")
         }
@@ -86,7 +89,7 @@ fun addUser() {
 }
 
 @Composable
-fun HomePage(userName: String, startStudySession: () -> Unit) {
+fun HomePage(user: User, startStudySession: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()

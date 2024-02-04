@@ -10,13 +10,15 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.realstudy.StudySession
+import com.example.realstudy.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -26,13 +28,13 @@ import java.time.LocalTime
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun StudySessionScreen() {
+fun StudySessionScreen(user: User) {
 
     var workTime by remember { mutableStateOf("25") }
     var breakTime by remember { mutableStateOf("5") }
 
     var timerState by remember { mutableStateOf(TimerState.Stopped) }
-    var currentTime by remember { mutableStateOf(0) }
+    var currentTime by remember { mutableIntStateOf(0) }
 
     var startTime by remember { mutableStateOf(LocalTime.now()) }
 
@@ -85,6 +87,8 @@ fun StudySessionScreen() {
         // Start button
         Button(
             onClick = {
+                val images: MutableList<String> = mutableListOf()
+
                 val studyTime = workTime.toInt()
                 val breakTime = breakTime.toInt()
 
@@ -104,6 +108,16 @@ fun StudySessionScreen() {
                             withContext(Dispatchers.Main) {
                                 timerState = TimerState.Break
                                 startTime = LocalTime.now()
+
+                                // Call a function to update the database
+                                val session = StudySession(
+                                    user,
+                                    startTime,
+                                    LocalTime.now(),
+                                    studyTime * 60 - currentTime,
+                                    images
+                                )
+                                session.updateDB()
                             }
                         }
                     }
