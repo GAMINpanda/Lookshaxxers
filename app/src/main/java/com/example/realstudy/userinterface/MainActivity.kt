@@ -31,6 +31,10 @@ import com.example.realstudy.ui.theme.RealStudyTheme
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
 
+val user =
+    User("1234", mutableListOf(), Profile("John Doe", "defaultpicture.jpg"), mutableListOf())
+
+
 class MainActivity : ComponentActivity() {
     private lateinit var viewModel: MainViewModel
 
@@ -39,6 +43,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         FirebaseApp.initializeApp(this)
+
+        // implement logic to check if phone already has user. if not, create default user,
+        // otherwise access existing users details and create object from it
+
+        val userExists = false
+
+        if (userExists) {
+            TODO() // if a phone has already created a user, fetch that user data and create an object from it
+        }
+
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
