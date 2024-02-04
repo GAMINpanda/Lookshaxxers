@@ -19,7 +19,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import com.example.realstudy.R
 import com.example.realstudy.StudySession
 import com.example.realstudy.User
@@ -75,8 +79,10 @@ fun StudySessionScreen(user: User) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "StudyReal",
-                style = MaterialTheme.typography.titleLarge,
+                text = "StudyReal.",
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold
+                ),
                 modifier = Modifier.padding(bottom = 16.dp)
             )
         }
@@ -159,7 +165,8 @@ fun StudySessionScreen(user: User) {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp)
+                .height(60.dp),
+            colors = ButtonDefaults.buttonColors(Color.Black)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -168,11 +175,11 @@ fun StudySessionScreen(user: User) {
                 if (timerState == TimerState.Stopped) {
                     Icon(Icons.Default.PlayArrow, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Start")
+                    Text(text = "Start", style = LocalTextStyle.current.copy(fontSize = 20.sp))
                 } else {
                     Icon(painter = painterResource(id = R.drawable.baseline_pause_24), contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Pause")
+                    Text(text = "Pause", style = LocalTextStyle.current.copy(fontSize = 20.sp))
                 }
 
             }
@@ -188,7 +195,8 @@ fun StudySessionScreen(user: User) {
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center
         )
 
         // Add more UI components for the study session page
