@@ -33,6 +33,8 @@ import java.time.LocalTime
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun StudySessionScreen(user: User) {
+    val images = mutableListOf<String>()
+
     var workTime by remember { mutableStateOf("25") }
     var breakTime by remember { mutableStateOf("5") }
 
@@ -121,6 +123,13 @@ fun StudySessionScreen(user: User) {
 
                     if (timerState == TimerState.Running) {
                         // Work time completed, now start break time
+                        val session = StudySession(
+                            startTime,
+                            LocalTime.now(),
+                            maxOf(0, (studyTime + breakTimeValue) * 60 - currentTime),  // Ensure non-negative value
+                            images
+                        )
+                        user.addSession(database, session)
                         withContext(Dispatchers.Main) {
                             timerState = TimerState.Break
                             startTime = LocalTime.now()
@@ -133,17 +142,11 @@ fun StudySessionScreen(user: User) {
                                 }
 
                                 if (timerState == TimerState.Break) {
+
                                     // Break time completed, update database or perform any other necessary actions
                                     withContext(Dispatchers.Main) {
                                         timerState = TimerState.Stopped
-                                        val session = StudySession(
-                                            user,
-                                            startTime,
-                                            LocalTime.now(),
-                                            maxOf(0, (studyTime + breakTimeValue) * 60 - currentTime),  // Ensure non-negative value
-                                            mutableListOf()
-                                        )
-                                        session.updateDB()
+
                                     }
                                 }
                             }
