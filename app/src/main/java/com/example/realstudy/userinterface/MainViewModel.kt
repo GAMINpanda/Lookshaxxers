@@ -3,20 +3,23 @@ package com.example.realstudy.userinterface
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.realstudy.Profile
+import com.example.realstudy.User
 
 class MainViewModel : ViewModel() {
     val remainingTime: Int = 60
 
     // LiveData for user name
-    private val _userName = MutableLiveData<String>()
-    val userName: LiveData<String> get() = _userName
+    private val user =
+        User("1234", mutableListOf(), Profile("John Doe", "defaultpicture.jpg"), mutableListOf())
+    val userData: User get() = user
+
+    val userName: String = user.profile.displayName
 
     // ... (Other parts of the ViewModel)
 
     init {
-        // Initialize the user name (you can replace it with the actual user data)
-        _userName.value = "John Doe"
-
+        // Initialize the different properties of the user
         // ... (Other initialization logic)
     }
 

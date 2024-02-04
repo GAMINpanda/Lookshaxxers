@@ -31,6 +31,17 @@ import com.example.realstudy.ui.theme.RealStudyTheme
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
 
+// For getting feed
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+
+// UI design
+import androidx.compose.ui.graphics.Color // Colours
+
+val databaseReference =
+    FirebaseDatabase.getInstance("https://studyreal-98599-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users/")
+
 val user =
     User("1234", mutableListOf(), Profile("John Doe", "https://firebasestorage.googleapis.com/v0/b/studyreal-98599.appspot.com/o/mog.jpg?alt=media&token=f7973466-25c4-4535-86d0-ad982938983e"), mutableListOf())
 
@@ -77,6 +88,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 
 fun addUser(user: User) = database.child(user.userID).setValue(user)
 
@@ -151,7 +163,8 @@ fun HomePage(user: User, startStudySession: () -> Unit, goToSettings: () -> Unit
             onClick = { startStudySession() },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp)
+                .height(60.dp),
+            colors = ButtonDefaults.buttonColors(Color.Black)
         ) {
             Text(text = "Start Study Session")
         }
