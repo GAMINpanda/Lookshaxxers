@@ -27,7 +27,16 @@ import com.example.realstudy.R
 import com.example.realstudy.StudySession
 import com.example.realstudy.ui.theme.RealStudyTheme
 import com.google.firebase.FirebaseApp
+
 import com.google.firebase.database.FirebaseDatabase
+
+// For getting feed
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+
+val databaseReference =
+    FirebaseDatabase.getInstance("https://studyreal-98599-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users/")
 
 class MainActivity : ComponentActivity() {
     private lateinit var viewModel: MainViewModel
@@ -36,6 +45,55 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         FirebaseApp.initializeApp(this)
+
+        // User creation (purely as an example/base)
+        val friendUser =
+            User(
+                "1233",
+                mutableListOf(),
+                Profile("Lorand", "default"),
+                mutableListOf()
+            )
+        val currentUser =
+            User(
+                "1232",
+                mutableListOf(friendUser.userID),
+                Profile("Royce", "default"),
+                mutableListOf(
+                    StudySession(
+                        "1",
+                        "2",
+                        listOf("img1", "img2")
+                    ),
+                    StudySession(
+                        "3",
+                        "4",
+                        listOf("img3", "img4")
+                    )
+                )
+            )
+
+        // ---------- Session test ----------
+
+        fun fetchData() {
+            databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val allFriendSessions = currentUser.getFeed(snapshot)
+                    val testSession = allFriendSessions[0]
+                    println("Friend name: ${testSession.first}")
+                    println("Sessions:")
+                    println(testSession.third.joinToString(separator = "\n") { "Start: ${it.startTime} -> End: ${it.endTime}" })
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+        }
+
+        fetchData()
+
+        // ----------------------------------
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
@@ -70,9 +128,6 @@ fun HomePageScreen(navController: NavHostController, viewModel: MainViewModel) {
     )
 }
 
-val database =
-    FirebaseDatabase.getInstance("https://studyreal-98599-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/users")
-
 
 @Composable
 fun HomePage(userName: String, startStudySession: () -> Unit) {
@@ -100,6 +155,7 @@ fun HomePage(userName: String, startStudySession: () -> Unit) {
             modifier = Modifier.padding(bottom = 16.dp)
         )
         // Other UI components as needed
+
     }
 
     // Box to overlay the button at the bottom
