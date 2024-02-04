@@ -1,5 +1,6 @@
 package com.example.realstudy.userinterface
 
+import androidx.compose.runtime.remember
 import android.os.Build
 import com.example.realstudy.camera.Camera
 import androidx.annotation.RequiresApi
@@ -9,19 +10,23 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.realstudy.R
 import com.example.realstudy.StudySession
 import com.example.realstudy.User
@@ -35,7 +40,7 @@ import java.time.LocalTime
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun StudySessionScreen(user: User) {
+fun StudySessionScreen(user: User, navController: NavController) {
 
     val images = mutableListOf<String>()
 
@@ -58,14 +63,6 @@ fun StudySessionScreen(user: User) {
         }
     }
 
-    // Use LaunchedEffect to restart the timer when currentTime reaches 0
-    LaunchedEffect(currentTime) {
-        if (currentTime == 0 && timerState != TimerState.Stopped) {
-            timerState = TimerState.Stopped
-            startTime = LocalTime.now()
-        }
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -76,13 +73,20 @@ fun StudySessionScreen(user: User) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            IconButton(onClick = { navController.popBackStack() }) {
+
+                Icon(Icons.Default.ArrowBack, contentDescription = "Back", modifier= Modifier.padding(bottom = 10.dp))
+            }
             Text(
-                text = "StudyReal",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(bottom = 16.dp)
+                text = "StudyReal.",
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(start = 8.dp)
+                    .padding(bottom = 10.dp)
             )
         }
 
@@ -115,8 +119,11 @@ fun StudySessionScreen(user: User) {
         // Start button
         Button(
             onClick = {
+                if (workTime == "")  {workTime = "25"}
                 val studyTime = workTime.toInt()
-                val breakTimeValue = breakTime.toInt()
+                var breakTimeValue: Int
+                if (breakTime == "") {breakTimeValue = studyTime/5}
+                breakTimeValue = breakTime.toInt()
 
                 timerState = TimerState.Running
                 startTime = LocalTime.now()
@@ -134,28 +141,28 @@ fun StudySessionScreen(user: User) {
                         val session = StudySession(
                             format.first,
                             format.second,
-                            maxOf(0, (studyTime + breakTimeValue) * 60 - currentTime),  // Ensure non-negative value
+                            maxOf(0, (studyTime + breakTimeValue) * 60 - currentTime).toString(),  // Ensure non-negative value
                             images
                         )
                         user.addSession(database, session)
                         withContext(Dispatchers.Main) {
                             timerState = TimerState.Break
                             startTime = LocalTime.now()
+                            currentTime = 0
 
                             CoroutineScope(Dispatchers.Default).launch {
                                 // Start the timer coroutine for break time
-                                while (currentTime <= (studyTime + breakTimeValue) * 60 && timerState == TimerState.Break) {
+                                while (currentTime < (breakTimeValue) * 60 && timerState == TimerState.Break) {
                                     currentTime = LocalTime.now().toSecondOfDay() - startTime.toSecondOfDay()
                                     delay(1000)
                                 }
 
                                 if (timerState == TimerState.Break) {
-
                                     // Break time completed, update database or perform any other necessary actions
                                     withContext(Dispatchers.Main) {
                                         timerState = TimerState.Stopped
-
                                     }
+                                    currentTime = 0
                                 }
                             }
                         }
@@ -164,7 +171,8 @@ fun StudySessionScreen(user: User) {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp)
+                .height(60.dp),
+            colors = ButtonDefaults.buttonColors(Color.Black)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -173,11 +181,11 @@ fun StudySessionScreen(user: User) {
                 if (timerState == TimerState.Stopped) {
                     Icon(Icons.Default.PlayArrow, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Start")
+                    Text(text = "Start", style = LocalTextStyle.current.copy(fontSize = 20.sp))
                 } else {
                     Icon(painter = painterResource(id = R.drawable.baseline_pause_24), contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Pause")
+                    Text(text = "Pause", style = LocalTextStyle.current.copy(fontSize = 20.sp))
                 }
 
             }
@@ -193,7 +201,8 @@ fun StudySessionScreen(user: User) {
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center
         )
 
         // Add more UI components for the study session page
