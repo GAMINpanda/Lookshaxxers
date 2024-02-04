@@ -1,21 +1,33 @@
 package com.example.realstudy.studytimer
 
-fun main(args: Array<String>) {
-    var flag = true
-    var intput: Int // It's named intput on purpose, I'm not retarded
-    var study = true
-    while (flag) {
-        print("Enter timer length: ")
-        intput = readln().toInt()
-        MainActivity(intput, study)
-        print("Would you like to have another study session (0 - yes, 1 - no): ")
-        flag = readln() == "0"
-        study = false
-        if (flag) {
-            print("\nHere is your well-deserved break before your next study session:")
-            MainActivity(intput / 5, study)
-        } else {
-            print("\nWell done, now go touch some grass you fuckin incel")
+import android.os.Build
+import androidx.annotation.RequiresApi
+import java.time.LocalTime
+
+class StudyTimer(studyTime: Int, breakTime: Int){
+    var sCounter = studyTime * 60
+    var bCounter = breakTime * 60
+    @RequiresApi(Build.VERSION_CODES.O)
+    var startTime = LocalTime.now()
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun sTime(): Pair<LocalTime,LocalTime>{
+        startTime = LocalTime.now()
+        //Disable apps function
+        while (sCounter >= 0){
+            sCounter -= 1
+            Thread.sleep(1000)
+        }
+        //Enable apps
+        return Pair(startTime,LocalTime.now())
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun bTime(){
+        startTime = LocalTime.now()
+        while(bCounter >= 0){
+            bCounter -= 1
+            Thread.sleep(1000)
         }
     }
 }
