@@ -16,6 +16,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -34,6 +35,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.realstudy.User
 import com.google.firebase.database.DataSnapshot
@@ -149,7 +151,10 @@ fun SettingsScreen(user: User, navController: NavController) {
                     .height(60.dp),
                 colors = ButtonDefaults.buttonColors(Color.Black)
             ) {
-                Text(text = "Save")
+                Text(
+                    text = "Save",
+                    style = LocalTextStyle.current.copy(fontSize = 20.sp)
+                )
             }
         }
     }

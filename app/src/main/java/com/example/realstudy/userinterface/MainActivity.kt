@@ -247,44 +247,67 @@ fun FriendBox(friend: Triple<String, String, List<StudySession>>) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .border(2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp))
+            .border(2.dp, color = Color.Black, shape = RoundedCornerShape(12.dp))
+            .background(
+                color = Color.Black,
+                shape = RoundedCornerShape(16.dp)
+            )
     ) {
         // Top bar showcasing the name
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .fillMaxHeight()
                 .padding(
                     start = 12.dp,
                     top = 8.dp,
                     end = 16.dp,
-                    bottom = 36.dp)
+                    bottom = 12.dp)
         ) {
             Text(
                 text = friend.first,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 8.dp)
+                color = Color.White,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier.padding(bottom = 2.dp)
             )
         }
 
         // Large box beneath for a "timeline"-esque gadget
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(top = 32.dp, start = 8.dp, end = 8.dp) // Adjust the top padding to control the splitter height
+                .fillMaxSize()
+                .padding(
+                    top = 36.dp,
+                    start = 12.dp,
+                    end = 12.dp,
+                    bottom = 18.dp)  // Distance between inner box and bottom border
                 .background(
-                    color = Color.Gray,
+                    color = Color.White,
                     shape = RoundedCornerShape(12.dp)
                 )
         ) {
-            // Timeline gadget or any other content you want to display
-            // You can customize this part based on your design requirements
+            val info = friend.third.joinToString(separator = " ───── ", postfix = "\n") {
+                "${it.startTime} ➜ ${it.endTime}"
+            }
+
             Text(
-                text = "Timeline",
-                style = MaterialTheme.typography.bodyMedium,
+                text = "Timeline\n",
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Bold
+                ),
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(start = 5.dp, top = 6.dp, bottom = 6.dp)
+                    .padding(start = 8.dp, top = 5.dp, bottom = 6.dp)
+            )
+
+            Text(
+                text = info,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier
+                    .padding(start = 6.dp, top = 26.dp, bottom = 6.dp)
+                    .align(Alignment.Center)
             )
         }
     }
