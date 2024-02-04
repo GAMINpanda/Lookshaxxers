@@ -35,6 +35,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.realstudy.User
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 
 @Composable
 fun SettingsScreen(user: User, navController: NavController) {
@@ -125,6 +128,7 @@ fun SettingsScreen(user: User, navController: NavController) {
 
         fun submitName() {
             user.updateName(database, name)
+
             navController.popBackStack()   //back arrow
         }
 

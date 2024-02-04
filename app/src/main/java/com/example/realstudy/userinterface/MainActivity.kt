@@ -44,8 +44,26 @@ import androidx.compose.ui.unit.sp  // Font-size
 val databaseReference =
     FirebaseDatabase.getInstance("https://studyreal-98599-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users/")
 
-val user =
-    User("1234", mutableListOf(), Profile("John Doe", "https://firebasestorage.googleapis.com/v0/b/studyreal-98599.appspot.com/o/mog.jpg?alt=media&token=f7973466-25c4-4535-86d0-ad982938983e"), mutableListOf())
+fun fetchData(u: User) {
+    databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            val data = snapshot.child(u.userID)
+            user = User(
+                u.userID,
+                u.getFriends(data).toMutableList(),
+                u.getProfile(data),
+                u.getSessions(data)
+            )
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            TODO("Not yet implemented")
+        }
+    })
+}
+
+var user = User("1234", mutableListOf(), Profile("John Doe", "https://firebasestorage.googleapis.com/v0/b/studyreal-98599.appspot.com/o/mog.jpg?alt=media&token=f7973466-25c4-4535-86d0-ad982938983e"), mutableListOf())
+
 
 
 class MainActivity : ComponentActivity() {
@@ -67,6 +85,7 @@ class MainActivity : ComponentActivity() {
         } else {
             addUser(user)
         }
+
 
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
@@ -96,6 +115,7 @@ fun addUser(user: User) = database.child(user.userID).setValue(user)
 
 @Composable
 fun HomePageScreen(navController: NavHostController, viewModel: MainViewModel) {
+    fetchData(user)  // Refreshing the user (for any updates while off this page)
 
     HomePage(
         user = user,
