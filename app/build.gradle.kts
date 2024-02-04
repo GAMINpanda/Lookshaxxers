@@ -74,5 +74,11 @@ dependencies {
 
     implementation("com.google.firebase:firebase-database-ktx:20.3.0")
     implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
+    val camerax_stable_version = "1.0.1"
+    val camerax_alpha_version = "1.0.0-alpha28"
+    implementation("androidx.camera:camera-camera2:$camerax_stable_version")
+    implementation("androidx.camera:camera-lifecycle:$camerax_stable_version")
+    implementation("androidx.camera:camera-view:$camerax_alpha_version")
+    implementation("com.google.accompanist:accompanist-permissions:0.18.0")
 
 }

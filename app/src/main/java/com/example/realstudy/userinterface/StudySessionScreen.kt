@@ -1,6 +1,7 @@
 package com.example.realstudy.userinterface
 
 import android.os.Build
+import com.example.realstudy.camera.Camera
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -19,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import com.example.realstudy.R
 import com.example.realstudy.StudySession
@@ -43,6 +45,9 @@ fun StudySessionScreen(user: User) {
     var timerState by remember { mutableStateOf(TimerState.Stopped) }
     var currentTime by remember { mutableIntStateOf(0) }
     var startTime by remember { mutableStateOf(LocalTime.now()) }
+
+    val context = LocalContext.current
+    val camera = Camera()
 
     DisposableEffect(Unit) {
         onDispose {
@@ -193,8 +198,14 @@ fun StudySessionScreen(user: User) {
 
         // Add more UI components for the study session page
         // For example, a timer, progress indicator, etc.
+        camera.Permission(
+            permission = android.Manifest.permission.CAMERA,
+            rationale = "You said you wanted a picture, so I'm going to have to ask for permission."
+        ) {
+            camera.CameraPreview(modifier = Modifier
+                .fillMaxWidth())
+        }
     }
-
 }
 
 enum class TimerState {
