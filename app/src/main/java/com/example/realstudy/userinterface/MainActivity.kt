@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.material3.MaterialTheme
@@ -200,19 +199,28 @@ fun HomePage(user: User, startStudySession: () -> Unit, goToSettings: () -> Unit
                 .fillMaxSize()
                 .padding(top = 75.dp)
         ) {
+            fun leaderboardSort(
+                sessions: List<Triple<String, String, List<StudySession>>>
+            ): List<Triple<String, String, List<StudySession>>> {
+                return sessions.sortedByDescending { triple ->
+                    triple.third.sumOf { it.duration.toInt() }
+                }
+            }
+
             databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    allFriendSessions = user.getFeed(snapshot)
+                    allFriendSessions = leaderboardSort(user.getFeed(snapshot))
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     TODO("Not yet implemented")
                 }
             })
+
             items(allFriendSessions.size) { index ->
                 println(index)
                 // Display each friend's profile as a rounded outlined box
-                FriendBox(friend = allFriendSessions[index])
+                FriendBox(friend = allFriendSessions[index], index)
             }
         }
     }
@@ -242,7 +250,10 @@ fun HomePage(user: User, startStudySession: () -> Unit, goToSettings: () -> Unit
 }
 
 @Composable
-fun FriendBox(friend: Triple<String, String, List<StudySession>>) {
+fun FriendBox(
+    friend: Triple<String, String, List<StudySession>>,
+    place: Int
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -266,14 +277,19 @@ fun FriendBox(friend: Triple<String, String, List<StudySession>>) {
         ) {
             fun isMe(name: String): String =
                 if (user.profile.displayName == name) {
-                    "$name (you)"
+                    "#${place + 1} - $name (you)"
                 } else {
-                    name
+                    "#${place + 1} - $name"
                 }
 
             Text(
                 text = isMe(friend.first),
-                color = Color.White,
+                color =
+                    if (place == 0) {
+                        Color(0xFFFFD700)  // Change to the desired color when place is 0 (e.g., Color.Green)
+                    } else {
+                        Color.White // Change to the default color when place is not 0
+                    },
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
