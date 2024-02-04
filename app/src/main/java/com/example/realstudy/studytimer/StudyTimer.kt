@@ -14,9 +14,11 @@ class StudyTimer(studyTime: Int, breakTime: Int){
     fun sTime(): Pair<LocalTime,LocalTime>{
         startTime = LocalTime.now()
         //Disable apps function
-        while (sCounter >= 0){
+
+        while (sCounter >= 1){
             sCounter -= 1
             Thread.sleep(1000)
+            print("e")
         }
         //Enable apps
         return Pair(startTime,LocalTime.now())
@@ -25,9 +27,10 @@ class StudyTimer(studyTime: Int, breakTime: Int){
     @RequiresApi(Build.VERSION_CODES.O)
     fun bTime(){
         startTime = LocalTime.now()
-        while(bCounter >= 0){
+        while(bCounter >= 1){
             bCounter -= 1
             Thread.sleep(1000)
+            print("b")
         }
     }
 }
