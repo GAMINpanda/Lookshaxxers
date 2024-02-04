@@ -94,7 +94,6 @@ fun addUser(user: User) = database.child(user.userID).setValue(user)
 
 @Composable
 fun HomePageScreen(navController: NavHostController, viewModel: MainViewModel) {
-    val userName by viewModel.userName.observeAsState("John Doe")
 
     HomePage(
         user = user,
