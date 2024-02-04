@@ -37,7 +37,9 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 
 // UI design
-import androidx.compose.ui.graphics.Color // Colours
+import androidx.compose.ui.graphics.Color  // Colours
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp  // Font-size
 
 val databaseReference =
     FirebaseDatabase.getInstance("https://studyreal-98599-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users/")
@@ -134,8 +136,10 @@ fun HomePage(user: User, startStudySession: () -> Unit, goToSettings: () -> Unit
 
 
             Text(
-                text = "StudyReal",
-                style = MaterialTheme.typography.titleLarge,
+                text = "StudyReal.",
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold
+                ),
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
@@ -165,7 +169,11 @@ fun HomePage(user: User, startStudySession: () -> Unit, goToSettings: () -> Unit
                 .height(60.dp),
             colors = ButtonDefaults.buttonColors(Color.Black)
         ) {
-            Text(text = "Start Study Session")
+            Text(
+                text = "Start Study Session",
+                color = Color.White,
+                style = LocalTextStyle.current.copy(fontSize = 20.sp)
+            )
         }
     }
 }
