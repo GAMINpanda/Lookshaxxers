@@ -55,35 +55,6 @@ fun SettingsScreen(user: User, navController: NavController) {
                    contentScale = ContentScale.Crop
             )
 
-        //gradient overlay at the top
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, Color.White),
-                        startY = 100f,
-                        endY = 0f
-                    )
-                )
-        )
-
-        // Gradient overlay at the bottom
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-                .align(Alignment.BottomCenter)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(Color.White, Color.Transparent),
-                        startY = 50f,
-
-                        endY = 0f
-                    )
-                )
-        )
 
 
     Column(
@@ -117,6 +88,29 @@ fun SettingsScreen(user: User, navController: NavController) {
 
         }
 
+        fun updatePicture() {
+            TODO()
+        }
+
+        Box(
+            modifier = Modifier
+                .padding(top = 250.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            // Study session button
+            Button(
+                onClick = { updatePicture() },
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(40.dp),
+                colors = ButtonDefaults.buttonColors(Color.Black)
+            ) {
+                Text(text = "Update profile picture")
+            }
+        }
+
+
+
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
@@ -126,7 +120,7 @@ fun SettingsScreen(user: User, navController: NavController) {
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 300.dp)
+                .padding(top = 20.dp)
         )
 
         fun submitName() {
