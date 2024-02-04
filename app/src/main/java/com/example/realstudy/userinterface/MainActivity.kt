@@ -1,11 +1,5 @@
 package com.example.realstudy.userinterface
 
-// For getting/displaying feed
-
-// UI design
-
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -55,7 +49,6 @@ import com.example.realstudy.Profile
 import com.example.realstudy.R
 import com.example.realstudy.StudySession
 import com.example.realstudy.User
-import com.example.realstudy.camera.Camera
 import com.example.realstudy.notification.NotificationHandler
 import com.example.realstudy.ui.theme.RealStudyTheme
 import com.google.firebase.FirebaseApp
@@ -80,9 +73,7 @@ fun fetchData(u: User) {
             )
         }
 
-        override fun onCancelled(error: DatabaseError) {
-            TODO("Not yet implemented")
-        }
+        override fun onCancelled(error: DatabaseError) {}
     })
 }
 
@@ -92,7 +83,14 @@ val friendUser = User(
     Profile("Test", "default"),
     mutableListOf()
 )
-var user = User("1233", mutableListOf("1232"), Profile("John Doe", "https://firebasestorage.googleapis.com/v0/b/studyreal-98599.appspot.com/o/mog.jpg?alt=media&token=f7973466-25c4-4535-86d0-ad982938983e"), mutableListOf())
+var user = User(
+    "1233",
+    mutableListOf("1232"),
+    Profile(
+        "John Doe",
+        "https://firebasestorage.googleapis.com/v0/b/studyreal-98599.appspot.com/o/mog.jpg?alt=media&token=f7973466-25c4-4535-86d0-ad982938983e"),
+    mutableListOf()
+)
 
 class MainActivity : ComponentActivity() {
     private lateinit var viewModel: MainViewModel
@@ -106,9 +104,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         FirebaseApp.initializeApp(this)
-
-        // implement logic to check if phone already has user. if not, create default user,
-        // otherwise access existing users details and create object from it
 
         val userExists = false
 
@@ -213,8 +208,6 @@ fun HomePage(user: User, startStudySession: () -> Unit, goToSettings: () -> Unit
                 }
 
             }
-            // Title
-            // Other UI components as needed
         }
     }
     Box {
@@ -237,9 +230,7 @@ fun HomePage(user: User, startStudySession: () -> Unit, goToSettings: () -> Unit
                     allFriendSessions = leaderboardSort(user.getFeed(snapshot))
                 }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                override fun onCancelled(error: DatabaseError) {}
             })
 
             items(allFriendSessions.size) { index ->
@@ -312,9 +303,9 @@ fun FriendBox(
                 text = isMe(friend.first),
                 color =
                     if (place == 0) {
-                        Color(0xFFFFD700)  // Change to the desired color when place is 0 (e.g., Color.Green)
+                        Color(0xFFFFD700)
                     } else {
-                        Color.White // Change to the default color when place is not 0
+                        Color.White
                     },
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold

@@ -4,6 +4,8 @@ import androidx.compose.runtime.remember
 import android.os.Build
 import com.example.realstudy.camera.Camera
 import androidx.annotation.RequiresApi
+
+// Graphics/UI
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.ui.text.input.KeyboardType
@@ -26,6 +28,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+
+// Processing
 import androidx.navigation.NavController
 import com.example.realstudy.R
 import com.example.realstudy.StudySession
@@ -183,7 +187,9 @@ fun StudySessionScreen(user: User, navController: NavController) {
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(text = "Start", style = LocalTextStyle.current.copy(fontSize = 20.sp))
                 } else {
-                    Icon(painter = painterResource(id = R.drawable.baseline_pause_24), contentDescription = null)
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_pause_24),
+                        contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(text = "Pause", style = LocalTextStyle.current.copy(fontSize = 20.sp))
                 }

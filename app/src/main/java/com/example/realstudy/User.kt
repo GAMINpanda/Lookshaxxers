@@ -1,6 +1,5 @@
 package com.example.realstudy
 
-import android.se.omapi.Session
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 
@@ -9,9 +8,9 @@ class Profile(var displayName: String, var profilePicture: String)
 
 class User(
     val userID: String,
-    val friends: MutableList<String>,
+    private val friends: MutableList<String>,
     val profile: Profile,
-    val sessions: MutableList<StudySession>,
+    private val sessions: MutableList<StudySession>,
 ) {
     fun addFriend(database: DatabaseReference, friend: User) {
         friends.add(friend.userID)
@@ -51,10 +50,6 @@ class User(
 
     fun clearSessions(database: DatabaseReference) {
         database.child(userID).setValue(User(userID, friends, profile, mutableListOf()))
-    }
-
-    fun addToStorage() {
-        TODO()
     }
 
     fun getFriends(snapshot: DataSnapshot): List<String> {
