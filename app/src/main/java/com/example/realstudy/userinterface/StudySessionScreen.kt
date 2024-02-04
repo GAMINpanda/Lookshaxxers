@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import com.example.realstudy.R
 import com.example.realstudy.StudySession
 import com.example.realstudy.User
+import com.example.realstudy.formatter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -33,6 +34,7 @@ import java.time.LocalTime
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun StudySessionScreen(user: User) {
+
     val images = mutableListOf<String>()
 
     var workTime by remember { mutableStateOf("25") }
@@ -122,10 +124,11 @@ fun StudySessionScreen(user: User) {
                     }
 
                     if (timerState == TimerState.Running) {
+                        val format = formatter(startTime, LocalTime.now())
                         // Work time completed, now start break time
                         val session = StudySession(
-                            startTime,
-                            LocalTime.now(),
+                            format.first,
+                            format.second,
                             maxOf(0, (studyTime + breakTimeValue) * 60 - currentTime),  // Ensure non-negative value
                             images
                         )

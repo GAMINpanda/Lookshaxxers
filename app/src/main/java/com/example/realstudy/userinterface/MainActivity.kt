@@ -136,7 +136,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun HomePageScreen(navController: NavHostController, viewModel: MainViewModel) {
-    val userName by viewModel.userName.observeAsState("John Doe")
+    val userName = viewModel.userName
 
     HomePage(
         userName = userName,
