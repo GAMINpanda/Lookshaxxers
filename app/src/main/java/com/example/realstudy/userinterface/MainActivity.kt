@@ -1,5 +1,6 @@
 package com.example.realstudy.userinterface
 
+import android.os.Build
 import com.example.realstudy.User
 import com.example.realstudy.Profile
 
@@ -12,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -27,7 +29,6 @@ import com.example.realstudy.R
 import com.example.realstudy.StudySession
 import com.example.realstudy.ui.theme.RealStudyTheme
 import com.google.firebase.FirebaseApp
-
 import com.google.firebase.database.FirebaseDatabase
 
 // For getting feed
@@ -38,13 +39,28 @@ import com.google.firebase.database.DatabaseError
 val databaseReference =
     FirebaseDatabase.getInstance("https://studyreal-98599-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users/")
 
+val user =
+    User("1234", mutableListOf(), Profile("John Doe", "defaultpicture.jpg"), mutableListOf())
+
+
 class MainActivity : ComponentActivity() {
     private lateinit var viewModel: MainViewModel
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         FirebaseApp.initializeApp(this)
+
+        // implement logic to check if phone already has user. if not, create default user,
+        // otherwise access existing users details and create object from it
+
+        val userExists = false
+
+        if (userExists) {
+            TODO() // if a phone has already created a user, fetch that user data and create an object from it
+        }
+
 
         // User creation (purely as an example/base)
         val friendUser =
@@ -106,7 +122,7 @@ class MainActivity : ComponentActivity() {
                         HomePageScreen(navController, viewModel)
                     }
                     composable("studySession") {
-                        StudySessionScreen()
+                        StudySessionScreen(user)
                     }
                 }
             }
@@ -127,6 +143,9 @@ fun HomePageScreen(navController: NavHostController, viewModel: MainViewModel) {
         }
     )
 }
+
+val database =
+    FirebaseDatabase.getInstance("https://studyreal-98599-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/users")
 
 
 @Composable
