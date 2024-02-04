@@ -12,7 +12,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -20,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -55,14 +53,6 @@ fun StudySessionScreen(user: User, navController: NavController) {
             // Reset variables when the composable is disposed (e.g., when navigating away)
             timerState = TimerState.Stopped
             currentTime = 0
-            startTime = LocalTime.now()
-        }
-    }
-
-    // Use LaunchedEffect to restart the timer when currentTime reaches 0
-    LaunchedEffect(currentTime) {
-        if (currentTime == 0 && timerState != TimerState.Stopped) {
-            timerState = TimerState.Stopped
             startTime = LocalTime.now()
         }
     }
@@ -149,21 +139,21 @@ fun StudySessionScreen(user: User, navController: NavController) {
                         withContext(Dispatchers.Main) {
                             timerState = TimerState.Break
                             startTime = LocalTime.now()
+                            currentTime = 0
 
                             CoroutineScope(Dispatchers.Default).launch {
                                 // Start the timer coroutine for break time
-                                while (currentTime <= (studyTime + breakTimeValue) * 60 && timerState == TimerState.Break) {
+                                while (currentTime < (breakTimeValue) * 60 && timerState == TimerState.Break) {
                                     currentTime = LocalTime.now().toSecondOfDay() - startTime.toSecondOfDay()
                                     delay(1000)
                                 }
 
                                 if (timerState == TimerState.Break) {
-
                                     // Break time completed, update database or perform any other necessary actions
                                     withContext(Dispatchers.Main) {
                                         timerState = TimerState.Stopped
-
                                     }
+                                    currentTime = 0
                                 }
                             }
                         }
@@ -172,8 +162,7 @@ fun StudySessionScreen(user: User, navController: NavController) {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp),
-            colors = ButtonDefaults.buttonColors(Color.Black)
+                .height(60.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -182,11 +171,11 @@ fun StudySessionScreen(user: User, navController: NavController) {
                 if (timerState == TimerState.Stopped) {
                     Icon(Icons.Default.PlayArrow, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Start", style = LocalTextStyle.current.copy(fontSize = 20.sp))
+                    Text(text = "Start")
                 } else {
                     Icon(painter = painterResource(id = R.drawable.baseline_pause_24), contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Pause", style = LocalTextStyle.current.copy(fontSize = 20.sp))
+                    Text(text = "Pause")
                 }
 
             }
@@ -202,8 +191,7 @@ fun StudySessionScreen(user: User, navController: NavController) {
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center
+            style = MaterialTheme.typography.bodyMedium
         )
 
         // Add more UI components for the study session page
