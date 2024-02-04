@@ -10,5 +10,4 @@ class StudySession(
     fun updateDB() {
         TODO("Not yet implemented")
     }
-
 }

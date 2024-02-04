@@ -10,6 +10,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -17,6 +19,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import com.example.realstudy.R
 import com.example.realstudy.StudySession
 import com.example.realstudy.User
 import kotlinx.coroutines.CoroutineScope
@@ -29,14 +33,29 @@ import java.time.LocalTime
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun StudySessionScreen(user: User) {
-
     var workTime by remember { mutableStateOf("25") }
     var breakTime by remember { mutableStateOf("5") }
 
     var timerState by remember { mutableStateOf(TimerState.Stopped) }
     var currentTime by remember { mutableIntStateOf(0) }
-
     var startTime by remember { mutableStateOf(LocalTime.now()) }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            // Reset variables when the composable is disposed (e.g., when navigating away)
+            timerState = TimerState.Stopped
+            currentTime = 0
+            startTime = LocalTime.now()
+        }
+    }
+
+    // Use LaunchedEffect to restart the timer when currentTime reaches 0
+    LaunchedEffect(currentTime) {
+        if (currentTime == 0 && timerState != TimerState.Stopped) {
+            timerState = TimerState.Stopped
+            startTime = LocalTime.now()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -87,37 +106,46 @@ fun StudySessionScreen(user: User) {
         // Start button
         Button(
             onClick = {
-                val images: MutableList<String> = mutableListOf()
-
                 val studyTime = workTime.toInt()
-                val breakTime = breakTime.toInt()
+                val breakTimeValue = breakTime.toInt()
 
                 timerState = TimerState.Running
                 startTime = LocalTime.now()
 
-                if (timerState == TimerState.Running) {
-                    // Start the timer coroutine
-                    CoroutineScope(Dispatchers.Default).launch {
-                        while (currentTime < studyTime * 60 && timerState == TimerState.Running) {
-                            currentTime = LocalTime.now().toSecondOfDay() - startTime.toSecondOfDay()
-                            delay(1000)
-                        }
+                CoroutineScope(Dispatchers.Default).launch {
+                    // Start the timer coroutine for work time
+                    while (currentTime < studyTime * 60 && timerState == TimerState.Running) {
+                        currentTime = LocalTime.now().toSecondOfDay() - startTime.toSecondOfDay()
+                        delay(1000)
+                    }
 
-                        if (timerState == TimerState.Running) {
-                            // Work time completed, now start break time
-                            withContext(Dispatchers.Main) {
-                                timerState = TimerState.Break
-                                startTime = LocalTime.now()
+                    if (timerState == TimerState.Running) {
+                        // Work time completed, now start break time
+                        withContext(Dispatchers.Main) {
+                            timerState = TimerState.Break
+                            startTime = LocalTime.now()
 
-                                // Call a function to update the database
-                                val session = StudySession(
-                                    user,
-                                    startTime,
-                                    LocalTime.now(),
-                                    studyTime * 60 - currentTime,
-                                    images
-                                )
-                                session.updateDB()
+                            CoroutineScope(Dispatchers.Default).launch {
+                                // Start the timer coroutine for break time
+                                while (currentTime <= (studyTime + breakTimeValue) * 60 && timerState == TimerState.Break) {
+                                    currentTime = LocalTime.now().toSecondOfDay() - startTime.toSecondOfDay()
+                                    delay(1000)
+                                }
+
+                                if (timerState == TimerState.Break) {
+                                    // Break time completed, update database or perform any other necessary actions
+                                    withContext(Dispatchers.Main) {
+                                        timerState = TimerState.Stopped
+                                        val session = StudySession(
+                                            user,
+                                            startTime,
+                                            LocalTime.now(),
+                                            maxOf(0, (studyTime + breakTimeValue) * 60 - currentTime),  // Ensure non-negative value
+                                            mutableListOf()
+                                        )
+                                        session.updateDB()
+                                    }
+                                }
                             }
                         }
                     }
@@ -131,16 +159,23 @@ fun StudySessionScreen(user: User) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Icon(Icons.Default.PlayArrow, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Start")
+                if (timerState == TimerState.Stopped) {
+                    Icon(Icons.Default.PlayArrow, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = "Start")
+                } else {
+                    Icon(painter = painterResource(id = R.drawable.baseline_pause_24), contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = "Pause")
+                }
+
             }
         }
 
         // Timer display
         Text(
             text = when (timerState) {
-                TimerState.Stopped -> "Timer Stopped"
+                TimerState.Stopped -> "Timer Not Started"
                 TimerState.Running -> "Time Remaining: ${(workTime.toInt() * 60 - currentTime) / 60} min ${(workTime.toInt() * 60 - currentTime) % 60} sec"
                 TimerState.Break -> "Break Time Remaining: ${(breakTime.toInt() * 60 - currentTime) / 60} min ${(breakTime.toInt() * 60 - currentTime) % 60} sec"
             },
