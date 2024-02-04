@@ -75,4 +75,6 @@ dependencies {
     implementation("com.google.firebase:firebase-database-ktx:20.3.0")
     implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
 
+    implementation("androidx.compose.ui:ui:1.1.0")
+
 }

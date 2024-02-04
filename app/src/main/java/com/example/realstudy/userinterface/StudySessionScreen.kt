@@ -133,7 +133,7 @@ fun StudySessionScreen(user: User, navController: NavController) {
                         val session = StudySession(
                             format.first,
                             format.second,
-                            maxOf(0, (studyTime + breakTimeValue) * 60 - currentTime),  // Ensure non-negative value
+                            maxOf(0, (studyTime + breakTimeValue) * 60 - currentTime).toString(),  // Ensure non-negative value
                             images
                         )
                         user.addSession(database, session)

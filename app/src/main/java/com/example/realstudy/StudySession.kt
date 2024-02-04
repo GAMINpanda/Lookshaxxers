@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter
 class StudySession(
     var startTime: String,
     var endTime: String,
-    val duration: Int,
+    val duration: String,
     val images: List<String>)
 
 @RequiresApi(Build.VERSION_CODES.O)

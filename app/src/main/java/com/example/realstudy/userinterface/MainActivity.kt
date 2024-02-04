@@ -14,6 +14,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -31,10 +33,12 @@ import com.example.realstudy.ui.theme.RealStudyTheme
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
 
-// For getting feed
+// For getting/displaying feed
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 // UI design
 import androidx.compose.ui.graphics.Color  // Colours
@@ -62,7 +66,13 @@ fun fetchData(u: User) {
     })
 }
 
-var user = User("1234", mutableListOf(), Profile("John Doe", "https://firebasestorage.googleapis.com/v0/b/studyreal-98599.appspot.com/o/mog.jpg?alt=media&token=f7973466-25c4-4535-86d0-ad982938983e"), mutableListOf())
+val friendUser = User(
+    "1232",
+    mutableListOf(),
+    Profile("Test", "default"),
+    mutableListOf()
+)
+var user = User("1233", mutableListOf("1232"), Profile("John Doe", "https://firebasestorage.googleapis.com/v0/b/studyreal-98599.appspot.com/o/mog.jpg?alt=media&token=f7973466-25c4-4535-86d0-ad982938983e"), mutableListOf())
 
 
 
@@ -134,44 +144,77 @@ val database =
 
 @Composable
 fun HomePage(user: User, startStudySession: () -> Unit, goToSettings: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+    // Creating a state variable
+    var allFriendSessions by remember {
+        mutableStateOf<List<Triple<String, String, List<StudySession>>>>(emptyList())
+    }
+
+    Box (
+        modifier = Modifier.fillMaxSize()
     ) {
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
 
 
-            Icon(
-                painter = painterResource(id = R.drawable.baseline_people_24),
-                contentDescription = null
-            )
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_people_24),
+                    contentDescription = null
+                )
 
 
-            Text(
-                text = "StudyReal.",
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
+                Text(
+                    text = "StudyReal.",
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier.padding(start = 12.dp, bottom = 16.dp)
+                )
 
-            IconButton(onClick = { goToSettings() }) {
+                IconButton(onClick = { goToSettings() }) {
 
-                Icon(Icons.Default.Settings, contentDescription = null)
+                    Icon(Icons.Default.Settings,
+                        contentDescription = null,
+                        modifier = Modifier.padding(bottom = 18.dp))
+                }
+
+            }
+            // Title
+            // Other UI components as needed
+        }
+    }
+    Box {
+        // User's friends feed
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 75.dp)
+        ) {
+            databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    allFriendSessions = user.getFeed(snapshot)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+            items(allFriendSessions.size) { index ->
+                println(index)
+                // Display each friend's profile as a rounded outlined box
+                FriendBox(friend = allFriendSessions[index])
             }
         }
-
-        // Title
-
-        // Other UI components as needed
     }
 
     // Box to overlay the button at the bottom
@@ -193,6 +236,55 @@ fun HomePage(user: User, startStudySession: () -> Unit, goToSettings: () -> Unit
                 text = "Start Study Session",
                 color = Color.White,
                 style = LocalTextStyle.current.copy(fontSize = 20.sp)
+            )
+        }
+    }
+}
+
+@Composable
+fun FriendBox(friend: Triple<String, String, List<StudySession>>) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .border(2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp))
+    ) {
+        // Top bar showcasing the name
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = 12.dp,
+                    top = 8.dp,
+                    end = 16.dp,
+                    bottom = 36.dp)
+        ) {
+            Text(
+                text = friend.first,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
+
+        // Large box beneath for a "timeline"-esque gadget
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(top = 32.dp, start = 8.dp, end = 8.dp) // Adjust the top padding to control the splitter height
+                .background(
+                    color = Color.Gray,
+                    shape = RoundedCornerShape(12.dp)
+                )
+        ) {
+            // Timeline gadget or any other content you want to display
+            // You can customize this part based on your design requirements
+            Text(
+                text = "Timeline",
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 5.dp, top = 6.dp, bottom = 6.dp)
             )
         }
     }
