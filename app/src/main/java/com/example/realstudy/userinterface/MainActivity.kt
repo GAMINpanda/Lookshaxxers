@@ -79,11 +79,13 @@ class MainActivity : ComponentActivity() {
                     StudySession(
                         "1",
                         "2",
+                        1,
                         listOf("img1", "img2")
                     ),
                     StudySession(
                         "3",
                         "4",
+                        1,
                         listOf("img3", "img4")
                     )
                 )

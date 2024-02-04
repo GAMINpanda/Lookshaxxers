@@ -1,7 +1,7 @@
 package com.example.realstudy
 
 class StudySession(
-    startTime: String,
-    endTime: String,
-    duration: Int,
-    images: List<String>)
+    val startTime: String,
+    val endTime: String,
+    val duration: Int,
+    val images: List<String>)

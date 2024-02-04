@@ -70,6 +70,7 @@ class User(
                 .map { c -> StudySession(
                     c.child("startTime").value as String,
                     c.child("endTime").value as String,
+                    c.child("duration").value as Int,
                     c.child("images").children
                         .map { img -> img.value as String }
                 )  }
