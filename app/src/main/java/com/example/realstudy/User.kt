@@ -63,8 +63,8 @@ class User(
 
     fun getFeed(snapshot: DataSnapshot): List<Triple<String, String, List<StudySession>>> {
         // Get sessions (packaged per user with their "display data")
-        val friendIDs = getFriends(snapshot.child(userID))
-        return friendIDs.map { Triple(
+        val ids = getFriends(snapshot.child(userID)) + listOf(userID)
+        return ids.map { Triple(
             snapshot.child(it).child("profile").child("displayName").value as String,
             snapshot.child(it).child("profile").child("profilePicture").value as String,
             snapshot.child(it).child("sessions").children

@@ -264,8 +264,15 @@ fun FriendBox(friend: Triple<String, String, List<StudySession>>) {
                     end = 16.dp,
                     bottom = 12.dp)
         ) {
+            fun isMe(name: String): String =
+                if (user.profile.displayName == name) {
+                    "$name (you)"
+                } else {
+                    name
+                }
+
             Text(
-                text = friend.first,
+                text = isMe(friend.first),
                 color = Color.White,
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold
@@ -288,7 +295,7 @@ fun FriendBox(friend: Triple<String, String, List<StudySession>>) {
                     shape = RoundedCornerShape(12.dp)
                 )
         ) {
-            val info = friend.third.joinToString(separator = " ───── ", postfix = "\n") {
+            val info = friend.third.joinToString(separator = " ───── ") {
                 "${it.startTime} ➜ ${it.endTime}"
             }
 
@@ -299,14 +306,19 @@ fun FriendBox(friend: Triple<String, String, List<StudySession>>) {
                 ),
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(start = 8.dp, top = 5.dp, bottom = 6.dp)
+                    .padding(start = 8.dp, top = 4.dp, bottom = 6.dp)
             )
 
+            fun emptyFeed(segments: String): String =
+                segments.ifEmpty {
+                    "No recorded study sessions today!"
+                }
+
             Text(
-                text = info,
+                text = emptyFeed(info),
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
-                    .padding(start = 6.dp, top = 26.dp, bottom = 6.dp)
+                    .padding(start = 6.dp, top = 26.dp, bottom = 8.dp)
                     .align(Alignment.Center)
             )
         }
