@@ -218,7 +218,9 @@ fun StudySessionScreen(user: User, navController: NavController) {
             rationale = "You said you wanted a picture, so I'm going to have to ask for permission."
         ) {
             camera.CameraPreview(modifier = Modifier
-                .fillMaxWidth())
+                .fillMaxWidth()
+                .padding(top = 60.dp)
+            )
         }
     }
 }
