@@ -1,5 +1,6 @@
 package com.example.realstudy.userinterface
 
+import androidx.compose.runtime.remember
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
@@ -15,7 +16,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -114,8 +114,11 @@ fun StudySessionScreen(user: User, navController: NavController) {
         // Start button
         Button(
             onClick = {
+                if (workTime == "")  {workTime = "25"}
                 val studyTime = workTime.toInt()
-                val breakTimeValue = breakTime.toInt()
+                var breakTimeValue: Int
+                if (breakTime == "") {breakTimeValue = studyTime/5}
+                breakTimeValue = breakTime.toInt()
 
                 timerState = TimerState.Running
                 startTime = LocalTime.now()
