@@ -32,7 +32,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
 
 val user =
-    User("1234", mutableListOf(), Profile("John Doe", "defaultpicture.jpg"), mutableListOf())
+    User("1234", mutableListOf(), Profile("John Doe", "https://firebasestorage.googleapis.com/v0/b/studyreal-98599.appspot.com/o/mog.jpg?alt=media&token=f7973466-25c4-4535-86d0-ad982938983e"), mutableListOf())
 
 
 class MainActivity : ComponentActivity() {
@@ -51,6 +51,8 @@ class MainActivity : ComponentActivity() {
 
         if (userExists) {
             TODO() // if a phone has already created a user, fetch that user data and create an object from it
+        } else {
+            addUser(user)
         }
 
 
@@ -67,13 +69,16 @@ class MainActivity : ComponentActivity() {
                     composable("studySession") {
                         StudySessionScreen(user)
                     }
+                    composable("settings") {
+                        SettingsScreen(user, navController)
+                    }
                 }
             }
         }
     }
 }
 
-
+fun addUser(user: User) = database.child(user.userID).setValue(user)
 
 @Composable
 fun HomePageScreen(navController: NavHostController, viewModel: MainViewModel) {
@@ -83,6 +88,9 @@ fun HomePageScreen(navController: NavHostController, viewModel: MainViewModel) {
         user = user,
         startStudySession = {
             navController.navigate("studySession")
+        },
+        goToSettings = {
+            navController.navigate("settings")
         }
     )
 }
@@ -92,7 +100,7 @@ val database =
 
 
 @Composable
-fun HomePage(user: User, startStudySession: () -> Unit) {
+fun HomePage(user: User, startStudySession: () -> Unit, goToSettings: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -106,16 +114,28 @@ fun HomePage(user: User, startStudySession: () -> Unit) {
                 .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Icon(painter = painterResource(id = R.drawable.baseline_people_24), contentDescription = null)
-            Icon(Icons.Default.Settings, contentDescription = null)
+
+
+            Icon(
+                painter = painterResource(id = R.drawable.baseline_people_24),
+                contentDescription = null
+            )
+
+
+            Text(
+                text = "StudyReal",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            IconButton(onClick = { goToSettings() }) {
+
+                Icon(Icons.Default.Settings, contentDescription = null)
+            }
         }
 
         // Title
-        Text(
-            text = "StudyReal",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+
         // Other UI components as needed
     }
 
