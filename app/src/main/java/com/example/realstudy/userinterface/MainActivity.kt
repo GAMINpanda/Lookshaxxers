@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.example.realstudy.R
+import com.example.realstudy.StudySession
 import com.example.realstudy.ui.theme.RealStudyTheme
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
@@ -36,8 +37,6 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        addUser()
 
         FirebaseApp.initializeApp(this)
 
@@ -74,19 +73,9 @@ fun HomePageScreen(navController: NavHostController, viewModel: MainViewModel) {
     )
 }
 
-val friend =
-    User("1233", mutableListOf(), Profile("Royce", "default"), mutableListOf())
-val user =
-    User("1234", mutableListOf(friend.userID), Profile("lorand", "default"), mutableListOf() )
-
-
 val database =
     FirebaseDatabase.getInstance("https://studyreal-98599-default-rtdb.europe-west1.firebasedatabase.app/").getReference("/users")
 
-fun addUser() {
-        database.child(friend.userID).setValue(friend)
-        database.child(user.userID).setValue(user)
-}
 
 @Composable
 fun HomePage(user: User, startStudySession: () -> Unit) {
@@ -133,22 +122,4 @@ fun HomePage(user: User, startStudySession: () -> Unit) {
             Text(text = "Start Study Session")
         }
     }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        // Study session button
-        Button(
-            onClick = { friend.addFriend(database, user) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-        ) {
-            Text(text = "Start poo Session")
-        }
-    }
-
 }
