@@ -8,9 +8,9 @@ class Profile(var displayName: String, var profilePicture: String)
 
 class User(
     val userID: String,
-    private val friends: MutableList<String>,
+    val friends: MutableList<String>,
     val profile: Profile,
-    private val sessions: MutableList<StudySession>,
+    val sessions: MutableList<StudySession>,
 ) {
     fun addFriend(database: DatabaseReference, friend: User) {
         friends.add(friend.userID)

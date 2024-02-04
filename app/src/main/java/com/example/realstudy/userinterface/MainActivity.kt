@@ -85,7 +85,7 @@ val friendUser = User(
 )
 var user = User(
     "1233",
-    mutableListOf("1232"),
+    mutableListOf("1231", "1232"),
     Profile(
         "John Doe",
         "https://firebasestorage.googleapis.com/v0/b/studyreal-98599.appspot.com/o/mog.jpg?alt=media&token=f7973466-25c4-4535-86d0-ad982938983e"),
